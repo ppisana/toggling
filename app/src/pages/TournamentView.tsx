@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthProvider'
 import type { Match, Profile, Tournament } from '../lib/types'
 import { BracketView } from '../components/BracketView'
+import { errorMessage } from '../lib/errors'
 
 type MatchWithPlayers = Match & {
   player1: { nickname: string; avatar_url: string | null } | null
@@ -66,7 +67,7 @@ export function TournamentView() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo generar el cuadro')
+      setError(errorMessage(err, 'No se pudo generar el cuadro'))
     } finally {
       setBusy(false)
     }
@@ -82,7 +83,7 @@ export function TournamentView() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo avanzar de ronda')
+      setError(errorMessage(err, 'No se pudo avanzar de ronda'))
     } finally {
       setBusy(false)
     }

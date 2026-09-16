@@ -6,6 +6,7 @@ import type { Match, MatchMessage, MatchProposal } from '../lib/types'
 import { MatchStatusBadge } from '../components/MatchStatusBadge'
 import { formatInZone, localInputToUtcIso, minDateTimeLocal } from '../lib/dates'
 import { Chat } from '../components/Chat'
+import { errorMessage } from '../lib/errors'
 
 type PlayerInfo = { id: string; nickname: string; avatar_url: string | null; timezone: string }
 type MatchFull = Match & {
@@ -100,7 +101,7 @@ export function MatchDetail() {
       setProposedLocal('')
       await load()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo proponer el horario')
+      setError(errorMessage(err, 'No se pudo proponer el horario'))
     } finally {
       setBusy(false)
     }
@@ -117,7 +118,7 @@ export function MatchDetail() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo responder la propuesta')
+      setError(errorMessage(err, 'No se pudo responder la propuesta'))
     } finally {
       setBusy(false)
     }
@@ -134,7 +135,7 @@ export function MatchDetail() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo reportar el resultado')
+      setError(errorMessage(err, 'No se pudo reportar el resultado'))
     } finally {
       setBusy(false)
     }
@@ -148,7 +149,7 @@ export function MatchDetail() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo confirmar el resultado')
+      setError(errorMessage(err, 'No se pudo confirmar el resultado'))
     } finally {
       setBusy(false)
     }

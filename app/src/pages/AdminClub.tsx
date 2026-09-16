@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthProvider'
 import type { Profile } from '../lib/types'
+import { errorMessage } from '../lib/errors'
 
 export function AdminClub() {
   const { profile, club, refresh } = useAuth()
@@ -44,7 +45,7 @@ export function AdminClub() {
       if (rpcError) throw rpcError
       await refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo regenerar el código')
+      setError(errorMessage(err, 'No se pudo regenerar el código'))
     } finally {
       setBusy(false)
     }
@@ -62,7 +63,7 @@ export function AdminClub() {
       setTournamentName('')
       navigate(`/tournament/${data as string}`)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo crear el torneo')
+      setError(errorMessage(err, 'No se pudo crear el torneo'))
     } finally {
       setBusy(false)
     }

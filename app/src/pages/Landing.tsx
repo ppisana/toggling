@@ -6,6 +6,7 @@ import { AvatarPicker } from '../components/AvatarPicker'
 import { TimezoneSelect } from '../components/TimezoneSelect'
 import { detectTimezone } from '../lib/timezones'
 import { randomAvatar } from '../lib/avatars'
+import { errorMessage } from '../lib/errors'
 
 type Mode = 'choose' | 'create' | 'join'
 
@@ -38,7 +39,7 @@ export function Landing() {
       await refresh()
       navigate('/club')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Algo salió mal')
+      setError(errorMessage(err, 'Algo salió mal'))
     } finally {
       setBusy(false)
     }
@@ -59,7 +60,7 @@ export function Landing() {
       await refresh()
       navigate('/club')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Algo salió mal')
+      setError(errorMessage(err, 'Algo salió mal'))
     } finally {
       setBusy(false)
     }
