@@ -27,7 +27,7 @@ export function BracketView({ matches, meId }: { matches: MatchWithPlayers[]; me
                 className={`flex flex-col gap-2 rounded-xl border px-3 py-2 text-sm backdrop-blur-sm transition hover:border-amber-400/60 ${
                   meId && (m.player1_id === meId || m.player2_id === meId)
                     ? 'border-amber-400/50 bg-amber-400/5'
-                    : 'border-amber-500/15 bg-emerald-950/50'
+                    : 'border-amber-500/15 bg-emerald-950/85'
                 }`}
               >
                 <PlayerRow player={m.player1} isWinner={m.winner_id === m.player1_id} />

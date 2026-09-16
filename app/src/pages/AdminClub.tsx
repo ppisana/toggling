@@ -73,7 +73,7 @@ export function AdminClub() {
 
   return (
     <div className="flex flex-col gap-8">
-      <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-5 backdrop-blur-sm">
+      <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/90 p-5 backdrop-blur-sm">
         <h2 className="font-display mb-2 text-lg font-bold text-amber-50">Invite players</h2>
         <p className="text-sm text-amber-100/60">
           Share this code or link with club members. When they join they pick a nickname, avatar
@@ -87,7 +87,7 @@ export function AdminClub() {
             readOnly
             value={inviteLink}
             onFocus={(e) => e.currentTarget.select()}
-            className="min-w-0 flex-1 rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-sm text-amber-50"
+            className="min-w-0 flex-1 rounded-lg border border-emerald-700/60 bg-emerald-950/70 px-3 py-2 text-sm text-amber-50"
           />
           <button
             onClick={handleRegenerateCode}
@@ -99,7 +99,7 @@ export function AdminClub() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-5 backdrop-blur-sm">
+      <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/90 p-5 backdrop-blur-sm">
         <h2 className="font-display mb-2 text-lg font-bold text-amber-50">Create tournament</h2>
         <form onSubmit={handleCreateTournament} className="flex flex-wrap gap-3">
           <input
@@ -107,12 +107,12 @@ export function AdminClub() {
             value={tournamentName}
             onChange={(e) => setTournamentName(e.target.value)}
             placeholder="e.g. Spring Knockout 2026"
-            className="min-w-0 flex-1 rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
+            className="min-w-0 flex-1 rounded-lg border border-emerald-700/60 bg-emerald-950/70 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
           />
           <button
             type="submit"
             disabled={busy}
-            className="rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
+            className="rounded-lg bg-gradient-to-b from-lime-400 to-green-600 px-4 py-2 font-semibold text-emerald-950 hover:from-lime-300 hover:to-green-500 disabled:opacity-50"
           >
             Create
           </button>
@@ -133,7 +133,7 @@ export function AdminClub() {
             {members.map((m) => (
               <li
                 key={m.id}
-                className="flex items-center gap-2 rounded-lg border border-amber-500/15 bg-emerald-950/50 px-3 py-2 text-sm backdrop-blur-sm"
+                className="flex items-center gap-2 rounded-lg border border-amber-500/15 bg-emerald-950/85 px-3 py-2 text-sm backdrop-blur-sm"
               >
                 <span className="text-lg">{m.avatar_url}</span>
                 <span className="font-medium text-amber-50">{m.nickname}</span>

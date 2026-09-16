@@ -7,9 +7,9 @@
 body {
   @apply text-amber-50;
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #04140d;
+  background-color: #17324a;
   background-image:
-    linear-gradient(to bottom, rgba(3, 15, 10, 0.88) 0%, rgba(3, 15, 10, 0.55) 42%, rgba(3, 15, 10, 0.2) 68%, rgba(3, 15, 10, 0.55) 100%),
+    linear-gradient(to bottom, rgba(10, 24, 20, 0.45) 0%, rgba(10, 24, 20, 0.12) 30%, rgba(10, 24, 20, 0.05) 55%, rgba(10, 24, 20, 0.4) 100%),
     url('/golf-bg.svg');
   background-size: cover;
   background-position: center bottom;

@@ -108,7 +108,7 @@ export function TournamentView() {
       {error && <p className="text-sm text-red-400">{error}</p>}
 
       {tournament.status === 'draft' && (
-        <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-4 backdrop-blur-sm">
+        <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/90 p-4 backdrop-blur-sm">
           <h2 className="mb-3 font-bold text-amber-50">Pick participants ({selected.size})</h2>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {members.map((m) => (
@@ -130,7 +130,7 @@ export function TournamentView() {
             <button
               onClick={handleGenerateBracket}
               disabled={busy || selected.size < 2}
-              className="mt-4 rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
+              className="mt-4 rounded-lg bg-gradient-to-b from-lime-400 to-green-600 px-4 py-2 font-semibold text-emerald-950 hover:from-lime-300 hover:to-green-500 disabled:opacity-50"
             >
               Generate random bracket
             </button>
@@ -146,7 +146,7 @@ export function TournamentView() {
         <button
           onClick={handleAdvanceRound}
           disabled={busy}
-          className="self-start rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
+          className="self-start rounded-lg bg-gradient-to-b from-lime-400 to-green-600 px-4 py-2 font-semibold text-emerald-950 hover:from-lime-300 hover:to-green-500 disabled:opacity-50"
         >
           Generate next round
         </button>

@@ -63,7 +63,7 @@ export function Dashboard() {
                 <Link
                   key={m.id}
                   to={`/match/${m.id}`}
-                  className="flex items-center justify-between rounded-xl border border-amber-500/15 bg-emerald-950/50 px-4 py-3 backdrop-blur-sm hover:border-amber-400/50"
+                  className="flex items-center justify-between rounded-xl border border-amber-500/15 bg-emerald-950/85 px-4 py-3 backdrop-blur-sm hover:border-amber-400/50"
                 >
                   <div>
                     <p className="text-xs uppercase tracking-wide text-amber-100/50">
@@ -96,7 +96,7 @@ export function Dashboard() {
               <Link
                 key={t.id}
                 to={`/tournament/${t.id}`}
-                className="flex items-center justify-between rounded-xl border border-amber-500/15 bg-emerald-950/50 px-4 py-3 backdrop-blur-sm hover:border-amber-400/50"
+                className="flex items-center justify-between rounded-xl border border-amber-500/15 bg-emerald-950/85 px-4 py-3 backdrop-blur-sm hover:border-amber-400/50"
               >
                 <span className="font-semibold text-amber-50">{t.name}</span>
                 <span className="text-xs uppercase tracking-wide text-amber-100/50">{t.status}</span>

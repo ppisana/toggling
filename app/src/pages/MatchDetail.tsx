@@ -192,7 +192,7 @@ export function MatchDetail() {
       )}
 
       {isParticipant && (match.status === 'pending' || match.status === 'scheduled') && (
-        <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-4 backdrop-blur-sm">
+        <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/90 p-4 backdrop-blur-sm">
           <h2 className="mb-2 font-bold text-amber-50">Propose a time</h2>
           <form onSubmit={submitProposal} className="flex flex-wrap items-end gap-3">
             <label className="flex flex-col gap-1 text-sm text-amber-100/80">
@@ -203,13 +203,13 @@ export function MatchDetail() {
                 min={minDateTimeLocal()}
                 value={proposedLocal}
                 onChange={(e) => setProposedLocal(e.target.value)}
-                className="rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-amber-50 focus:border-amber-400 focus:outline-none"
+                className="rounded-lg border border-emerald-700/60 bg-emerald-950/70 px-3 py-2 text-amber-50 focus:border-amber-400 focus:outline-none"
               />
             </label>
             <button
               type="submit"
               disabled={busy || !proposedLocal}
-              className="rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
+              className="rounded-lg bg-gradient-to-b from-lime-400 to-green-600 px-4 py-2 font-semibold text-emerald-950 hover:from-lime-300 hover:to-green-500 disabled:opacity-50"
             >
               Propose
             </button>
@@ -230,7 +230,7 @@ export function MatchDetail() {
             {pendingProposals.map((p) => (
               <div
                 key={p.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-500/15 bg-emerald-950/50 px-4 py-3 backdrop-blur-sm"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-500/15 bg-emerald-950/85 px-4 py-3 backdrop-blur-sm"
               >
                 <div>
                   <p className="text-sm font-medium text-amber-50">Proposed by {p.proposed_by_profile?.nickname}</p>
@@ -246,7 +246,7 @@ export function MatchDetail() {
                     <button
                       onClick={() => respond(p.id, true)}
                       disabled={busy}
-                      className="rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-3 py-1.5 text-sm font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500"
+                      className="rounded-lg bg-gradient-to-b from-lime-400 to-green-600 px-3 py-1.5 text-sm font-semibold text-emerald-950 hover:from-lime-300 hover:to-green-500"
                     >
                       Accept
                     </button>
@@ -300,7 +300,7 @@ export function MatchDetail() {
             <button
               onClick={confirmResult}
               disabled={busy}
-              className="mt-2 rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 text-sm font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500"
+              className="mt-2 rounded-lg bg-gradient-to-b from-lime-400 to-green-600 px-4 py-2 text-sm font-semibold text-emerald-950 hover:from-lime-300 hover:to-green-500"
             >
               Confirm result
             </button>
@@ -334,7 +334,7 @@ function PlayerChip({
   bye?: boolean
 }) {
   return (
-    <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${highlight ? 'border-amber-400/50 bg-amber-400/10' : 'border-amber-500/15 bg-emerald-950/50'}`}>
+    <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${highlight ? 'border-amber-400/50 bg-amber-400/10' : 'border-amber-500/15 bg-emerald-950/85'}`}>
       <span className="text-xl">{player?.avatar_url ?? '❔'}</span>
       <span className="font-semibold text-amber-50">{bye ? 'Bye' : (player?.nickname ?? 'TBD')}</span>
     </div>

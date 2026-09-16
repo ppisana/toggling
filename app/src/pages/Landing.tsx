@@ -80,7 +80,7 @@ export function Landing() {
         <div className="flex w-full flex-col gap-3">
           <button
             onClick={() => setMode('create')}
-            className="rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-3 font-semibold text-emerald-950 shadow-lg shadow-black/30 hover:from-amber-300 hover:to-amber-500"
+            className="rounded-xl bg-gradient-to-b from-lime-400 to-green-600 px-4 py-3 font-semibold text-emerald-950 shadow-lg shadow-black/30 hover:from-lime-300 hover:to-green-500"
           >
             Start my Country Club
           </button>
@@ -105,7 +105,7 @@ export function Landing() {
       >
         ← Back
       </button>
-      <div className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-6 shadow-lg shadow-black/30 backdrop-blur-sm">
+      <div className="rounded-2xl border border-amber-500/20 bg-emerald-950/90 p-6 shadow-lg shadow-black/30 backdrop-blur-sm">
         <h1 className="font-display text-xl font-bold text-amber-50">
           {isCreate ? 'Start your Country Club' : 'Join a Country Club'}
         </h1>
@@ -118,7 +118,7 @@ export function Landing() {
                 value={clubName}
                 onChange={(e) => setClubName(e.target.value)}
                 placeholder="e.g. Fairway Hills Golf Club"
-                className="rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
+                className="rounded-lg border border-emerald-700/60 bg-emerald-950/70 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
               />
             </label>
           ) : (
@@ -130,7 +130,7 @@ export function Landing() {
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
                 placeholder="e.g. 7K2QXPZ"
                 maxLength={7}
-                className="rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 uppercase tracking-widest text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
+                className="rounded-lg border border-emerald-700/60 bg-emerald-950/70 px-3 py-2 uppercase tracking-widest text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
               />
             </label>
           )}
@@ -144,7 +144,7 @@ export function Landing() {
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               placeholder="e.g. BirdieHunter88"
-              className="rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
+              className="rounded-lg border border-emerald-700/60 bg-emerald-950/70 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
             />
           </label>
 
@@ -163,7 +163,7 @@ export function Landing() {
           <button
             type="submit"
             disabled={busy}
-            className="mt-2 rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-3 font-semibold text-emerald-950 shadow-lg shadow-black/30 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
+            className="mt-2 rounded-xl bg-gradient-to-b from-lime-400 to-green-600 px-4 py-3 font-semibold text-emerald-950 shadow-lg shadow-black/30 hover:from-lime-300 hover:to-green-500 disabled:opacity-50"
           >
             {busy ? 'One moment…' : isCreate ? 'Create club' : 'Join'}
           </button>

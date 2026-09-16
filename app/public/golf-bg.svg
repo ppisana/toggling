@@ -1,31 +1,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#02120b" />
-      <stop offset="45%" stop-color="#0a2e1c" />
-      <stop offset="72%" stop-color="#2c5a2e" />
-      <stop offset="100%" stop-color="#caa23c" />
+      <stop offset="0%" stop-color="#2d7fc9" />
+      <stop offset="55%" stop-color="#8fc6ea" />
+      <stop offset="100%" stop-color="#e8f4ee" />
+    </linearGradient>
+    <linearGradient id="pond" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7fb8d6" />
+      <stop offset="100%" stop-color="#4c8fae" />
     </linearGradient>
     <radialGradient id="sun" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#f6d989" stop-opacity="0.95" />
-      <stop offset="55%" stop-color="#e0b84a" stop-opacity="0.35" />
-      <stop offset="100%" stop-color="#e0b84a" stop-opacity="0" />
+      <stop offset="0%" stop-color="#fff8e0" stop-opacity="0.95" />
+      <stop offset="60%" stop-color="#fff2c2" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#fff2c2" stop-opacity="0" />
     </radialGradient>
   </defs>
 
   <rect x="0" y="0" width="1600" height="900" fill="url(#sky)" />
-  <circle cx="800" cy="640" r="220" fill="url(#sun)" />
+  <circle cx="1260" cy="160" r="200" fill="url(#sun)" />
+  <circle cx="1260" cy="160" r="52" fill="#fffdf3" opacity="0.95" />
 
-  <path d="M0,660 C220,600 420,690 620,650 C820,610 1000,670 1220,640 C1400,618 1520,648 1600,630 L1600,900 L0,900 Z" fill="#3f6b3e" opacity="0.55" />
-  <path d="M0,760 C260,700 460,760 720,715 C960,680 1160,745 1360,705 C1460,690 1550,720 1600,710 L1600,900 L0,900 Z" fill="#1f5233" opacity="0.75" />
-  <path d="M0,830 C300,780 560,840 820,795 C1060,760 1300,815 1600,785 L1600,900 L0,900 Z" fill="#0f3420" />
+  <g opacity="0.85" fill="#ffffff">
+    <ellipse cx="260" cy="150" rx="90" ry="26" />
+    <ellipse cx="330" cy="165" rx="70" ry="22" />
+    <ellipse cx="700" cy="110" rx="80" ry="24" />
+    <ellipse cx="760" cy="125" rx="60" ry="18" />
+  </g>
 
-  <ellipse cx="300" cy="742" rx="24" ry="16" fill="#153c26" opacity="0.8" />
-  <ellipse cx="345" cy="748" rx="30" ry="18" fill="#153c26" opacity="0.8" />
-  <ellipse cx="1250" cy="735" rx="26" ry="16" fill="#153c26" opacity="0.7" />
+  <!-- distant tree line -->
+  <path d="M0,560 C120,520 220,545 320,525 C420,505 520,540 640,520 C760,500 860,535 980,515 C1100,495 1220,530 1340,512 C1420,500 1520,520 1600,510 L1600,900 L0,900 Z" fill="#2f6b3f" opacity="0.55" />
 
+  <!-- rolling fairway -->
+  <path d="M0,620 C220,580 420,650 640,610 C860,570 1040,630 1260,595 C1400,573 1520,600 1600,588 L1600,900 L0,900 Z" fill="#4b9350" />
+  <path d="M0,720 C260,680 480,745 740,705 C980,668 1180,730 1400,695 C1470,684 1550,700 1600,694 L1600,900 L0,900 Z" fill="#3c7f42" />
+  <path d="M0,820 C300,780 560,840 820,800 C1060,764 1300,815 1600,790 L1600,900 L0,900 Z" fill="#2c6534" />
+
+  <!-- water pond -->
+  <path d="M120,770 C220,745 340,760 420,790 C470,808 430,845 340,850 C240,856 90,830 90,800 C90,785 100,775 120,770 Z" fill="url(#pond)" opacity="0.9" />
+
+  <!-- sand bunker -->
+  <ellipse cx="1180" cy="800" rx="90" ry="26" fill="#e4cf9a" opacity="0.9" />
+
+  <!-- trees -->
+  <g opacity="0.9">
+    <ellipse cx="1440" cy="740" rx="38" ry="46" fill="#1f4d2a" />
+    <ellipse cx="1500" cy="758" rx="30" ry="36" fill="#245a30" />
+    <ellipse cx="70" cy="700" rx="30" ry="36" fill="#245a30" />
+  </g>
+
+  <!-- flagstick on the green -->
   <g>
-    <line x1="822" y1="792" x2="822" y2="724" stroke="#f5f1e6" stroke-width="4" stroke-linecap="round" />
-    <path d="M822,724 L866,740 L822,754 Z" fill="#e0b84a" />
+    <ellipse cx="760" cy="826" rx="70" ry="16" fill="#3f8a49" opacity="0.6" />
+    <line x1="762" y1="818" x2="762" y2="748" stroke="#f5f1e6" stroke-width="4" stroke-linecap="round" />
+    <path d="M762,748 L806,764 L762,778 Z" fill="#e0b84a" />
   </g>
 </svg>
