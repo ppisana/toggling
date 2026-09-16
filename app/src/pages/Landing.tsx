@@ -39,7 +39,7 @@ export function Landing() {
       await refresh()
       navigate('/club')
     } catch (err) {
-      setError(errorMessage(err, 'Algo salió mal'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -60,7 +60,7 @@ export function Landing() {
       await refresh()
       navigate('/club')
     } catch (err) {
-      setError(errorMessage(err, 'Algo salió mal'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -68,27 +68,27 @@ export function Landing() {
 
   if (mode === 'choose') {
     return (
-      <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-6 px-4 text-center">
+      <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-8 px-4 text-center">
         <div>
           <div className="text-5xl">⛳</div>
-          <h1 className="mt-3 text-2xl font-bold">Knockout Golf Scheduler</h1>
-          <p className="mt-2 text-sm text-slate-500">
-            Organizá torneos de knock-out de tu Country Club con jugadores en distintos husos
-            horarios, sin compartir mail ni teléfono.
+          <h1 className="font-display mt-4 text-3xl font-bold text-amber-50">Knockout Golf Scheduler</h1>
+          <p className="mt-3 text-amber-100/70">
+            Run your Country Club's WGT knock-out tournaments across time zones — no email, no
+            phone number, just your nickname.
           </p>
         </div>
         <div className="flex w-full flex-col gap-3">
           <button
             onClick={() => setMode('create')}
-            className="rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white shadow hover:bg-emerald-500"
+            className="rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-3 font-semibold text-emerald-950 shadow-lg shadow-black/30 hover:from-amber-300 hover:to-amber-500"
           >
-            Crear mi Country Club
+            Start my Country Club
           </button>
           <button
             onClick={() => setMode('join')}
-            className="rounded-xl border border-slate-300 px-4 py-3 font-semibold hover:border-emerald-500 dark:border-slate-700"
+            className="rounded-xl border border-amber-400/30 px-4 py-3 font-semibold text-amber-100 hover:border-amber-400 hover:bg-amber-400/10"
           >
-            Unirme con un código de invitación
+            Join with an invite code
           </button>
         </div>
       </div>
@@ -101,72 +101,74 @@ export function Landing() {
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-10">
       <button
         onClick={() => setMode('choose')}
-        className="mb-4 self-start text-sm text-slate-500 hover:text-emerald-600"
+        className="mb-4 self-start text-sm text-amber-100/60 hover:text-amber-300"
       >
-        ← Volver
+        ← Back
       </button>
-      <h1 className="text-xl font-bold">
-        {isCreate ? 'Crear tu Country Club' : 'Unirte a un Country Club'}
-      </h1>
-      <form onSubmit={isCreate ? handleCreate : handleJoin} className="mt-6 flex flex-col gap-4">
-        {isCreate ? (
-          <label className="flex flex-col gap-1 text-sm font-medium">
-            Nombre del club
+      <div className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-6 shadow-lg shadow-black/30 backdrop-blur-sm">
+        <h1 className="font-display text-xl font-bold text-amber-50">
+          {isCreate ? 'Start your Country Club' : 'Join a Country Club'}
+        </h1>
+        <form onSubmit={isCreate ? handleCreate : handleJoin} className="mt-6 flex flex-col gap-4">
+          {isCreate ? (
+            <label className="flex flex-col gap-1 text-sm font-medium text-amber-100/80">
+              Club name
+              <input
+                required
+                value={clubName}
+                onChange={(e) => setClubName(e.target.value)}
+                placeholder="e.g. Fairway Hills Golf Club"
+                className="rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
+              />
+            </label>
+          ) : (
+            <label className="flex flex-col gap-1 text-sm font-medium text-amber-100/80">
+              Invite code
+              <input
+                required
+                value={code}
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                placeholder="e.g. 7K2QXPZ"
+                maxLength={7}
+                className="rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 uppercase tracking-widest text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
+              />
+            </label>
+          )}
+
+          <label className="flex flex-col gap-1 text-sm font-medium text-amber-100/80">
+            Your nickname (same as in WGT)
             <input
               required
-              value={clubName}
-              onChange={(e) => setClubName(e.target.value)}
-              placeholder="Ej: Los Álamos Golf Club"
-              className="rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-900"
+              minLength={2}
+              maxLength={32}
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder="e.g. BirdieHunter88"
+              className="rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
             />
           </label>
-        ) : (
-          <label className="flex flex-col gap-1 text-sm font-medium">
-            Código de invitación
-            <input
-              required
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder="Ej: 7K2QXPZ"
-              maxLength={7}
-              className="rounded-lg border border-slate-300 px-3 py-2 uppercase tracking-widest dark:border-slate-700 dark:bg-slate-900"
-            />
+
+          <div className="flex flex-col gap-1 text-sm font-medium text-amber-100/80">
+            Pick your avatar
+            <AvatarPicker value={avatar} onChange={setAvatar} />
+          </div>
+
+          <label className="flex flex-col gap-1 text-sm font-medium text-amber-100/80">
+            Your time zone
+            <TimezoneSelect value={timezone} onChange={setTimezone} />
           </label>
-        )}
 
-        <label className="flex flex-col gap-1 text-sm font-medium">
-          Tu nickname (el mismo que en WGT)
-          <input
-            required
-            minLength={2}
-            maxLength={32}
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            placeholder="Ej: BirdieHunter88"
-            className="rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-900"
-          />
-        </label>
+          {error && <p className="text-sm text-red-400">{error}</p>}
 
-        <div className="flex flex-col gap-1 text-sm font-medium">
-          Elegí tu avatar
-          <AvatarPicker value={avatar} onChange={setAvatar} />
-        </div>
-
-        <label className="flex flex-col gap-1 text-sm font-medium">
-          Tu huso horario
-          <TimezoneSelect value={timezone} onChange={setTimezone} />
-        </label>
-
-        {error && <p className="text-sm text-red-500">{error}</p>}
-
-        <button
-          type="submit"
-          disabled={busy}
-          className="mt-2 rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white shadow hover:bg-emerald-500 disabled:opacity-50"
-        >
-          {busy ? 'Un momento…' : isCreate ? 'Crear club' : 'Unirme'}
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={busy}
+            className="mt-2 rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-3 font-semibold text-emerald-950 shadow-lg shadow-black/30 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
+          >
+            {busy ? 'One moment…' : isCreate ? 'Create club' : 'Join'}
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import type { Club, Profile } from '../lib/types'
+import { errorMessage } from '../lib/errors'
 
 interface AuthState {
   loading: boolean
@@ -62,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await loadProfileAndClub(activeSession.user.id)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No pudimos iniciar sesión')
+      setError(errorMessage(err, "We couldn't sign you in"))
     } finally {
       setLoading(false)
     }

@@ -45,8 +45,8 @@ export function TournamentView() {
     load()
   }, [load])
 
-  if (loading) return <p className="text-slate-400">Cargando…</p>
-  if (!tournament) return <p className="text-slate-500">Torneo no encontrado.</p>
+  if (loading) return <p className="text-amber-100/60">Loading…</p>
+  if (!tournament) return <p className="text-amber-100/60">Tournament not found.</p>
 
   const rounds = matches.map((m) => m.round)
   const currentRound = rounds.length ? Math.max(...rounds) : 0
@@ -67,7 +67,7 @@ export function TournamentView() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(errorMessage(err, 'No se pudo generar el cuadro'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -83,7 +83,7 @@ export function TournamentView() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(errorMessage(err, 'No se pudo avanzar de ronda'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -101,20 +101,20 @@ export function TournamentView() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-bold">{tournament.name}</h1>
-        <p className="text-sm uppercase tracking-wide text-slate-500">{tournament.status}</p>
+        <h1 className="font-display text-xl font-bold text-amber-50">{tournament.name}</h1>
+        <p className="text-sm uppercase tracking-wide text-amber-100/50">{tournament.status}</p>
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-red-400">{error}</p>}
 
       {tournament.status === 'draft' && (
-        <section className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
-          <h2 className="mb-3 font-bold">Elegí los participantes ({selected.size})</h2>
+        <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-4 backdrop-blur-sm">
+          <h2 className="mb-3 font-bold text-amber-50">Pick participants ({selected.size})</h2>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {members.map((m) => (
               <label
                 key={m.id}
-                className="flex items-center gap-2 rounded-lg border border-slate-200 px-2 py-1.5 text-sm dark:border-slate-800"
+                className="flex items-center gap-2 rounded-lg border border-amber-500/15 bg-emerald-900/30 px-2 py-1.5 text-sm text-amber-50"
               >
                 <input
                   type="checkbox"
@@ -130,12 +130,12 @@ export function TournamentView() {
             <button
               onClick={handleGenerateBracket}
               disabled={busy || selected.size < 2}
-              className="mt-4 rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
+              className="mt-4 rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
             >
-              Generar cuadro aleatorio
+              Generate random bracket
             </button>
           ) : (
-            <p className="mt-3 text-sm text-slate-500">Esperando a que la administradora genere el cuadro.</p>
+            <p className="mt-3 text-sm text-amber-100/60">Waiting for the administrator to generate the bracket.</p>
           )}
         </section>
       )}
@@ -146,13 +146,13 @@ export function TournamentView() {
         <button
           onClick={handleAdvanceRound}
           disabled={busy}
-          className="self-start rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
+          className="self-start rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
         >
-          Generar siguiente ronda
+          Generate next round
         </button>
       )}
 
-      {isFinalDone && <p className="font-semibold text-emerald-600">🏆 ¡Torneo completado!</p>}
+      {isFinalDone && <p className="font-semibold text-amber-300">🏆 Tournament complete!</p>}
     </div>
   )
 }

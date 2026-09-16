@@ -84,8 +84,8 @@ export function MatchDetail() {
     return match.player1_id === profile.id ? match.player2 : match.player1
   }, [profile, match])
 
-  if (loading) return <p className="text-slate-400">Cargando…</p>
-  if (!match) return <p className="text-slate-500">Partido no encontrado.</p>
+  if (loading) return <p className="text-amber-100/60">Loading…</p>
+  if (!match) return <p className="text-amber-100/60">Match not found.</p>
 
   async function submitProposal(e: React.FormEvent) {
     e.preventDefault()
@@ -101,7 +101,7 @@ export function MatchDetail() {
       setProposedLocal('')
       await load()
     } catch (err) {
-      setError(errorMessage(err, 'No se pudo proponer el horario'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -118,7 +118,7 @@ export function MatchDetail() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(errorMessage(err, 'No se pudo responder la propuesta'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -135,7 +135,7 @@ export function MatchDetail() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(errorMessage(err, 'No se pudo reportar el resultado'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -149,7 +149,7 @@ export function MatchDetail() {
       if (rpcError) throw rpcError
       await load()
     } catch (err) {
-      setError(errorMessage(err, 'No se pudo confirmar el resultado'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -160,12 +160,12 @@ export function MatchDetail() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">
-          {match.tournaments?.name} · Ronda {match.round}
+        <p className="text-xs uppercase tracking-wide text-amber-100/50">
+          {match.tournaments?.name} · Round {match.round}
         </p>
         <div className="mt-1 flex items-center gap-3">
           <PlayerChip player={match.player1} highlight={match.winner_id === match.player1_id} />
-          <span className="text-slate-400">vs</span>
+          <span className="text-amber-100/40">vs</span>
           <PlayerChip player={match.player2} highlight={match.winner_id === match.player2_id} bye={!match.player2_id} />
         </div>
         <div className="mt-2">
@@ -173,50 +173,50 @@ export function MatchDetail() {
         </div>
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-red-400">{error}</p>}
 
       {match.status === 'bye' && (
-        <p className="text-sm text-slate-500">Este cruce pasó directo a la próxima ronda.</p>
+        <p className="text-sm text-amber-100/60">This match advanced straight to the next round.</p>
       )}
 
       {match.status === 'scheduled' && match.scheduled_at && (
-        <section className="rounded-xl border border-emerald-400 bg-emerald-500/5 p-4">
-          <h2 className="font-bold">Horario confirmado</h2>
-          <p className="text-sm">
+        <section className="rounded-2xl border border-amber-400/30 bg-amber-400/5 p-4">
+          <h2 className="font-bold text-amber-50">Confirmed time</h2>
+          <p className="text-sm text-amber-100/80">
             {match.player1?.nickname}: {formatInZone(match.scheduled_at, match.player1?.timezone ?? 'UTC')}
           </p>
-          <p className="text-sm">
+          <p className="text-sm text-amber-100/80">
             {match.player2?.nickname}: {formatInZone(match.scheduled_at, match.player2?.timezone ?? 'UTC')}
           </p>
         </section>
       )}
 
       {isParticipant && (match.status === 'pending' || match.status === 'scheduled') && (
-        <section className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
-          <h2 className="mb-2 font-bold">Proponer un horario</h2>
+        <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-4 backdrop-blur-sm">
+          <h2 className="mb-2 font-bold text-amber-50">Propose a time</h2>
           <form onSubmit={submitProposal} className="flex flex-wrap items-end gap-3">
-            <label className="flex flex-col gap-1 text-sm">
-              Fecha y hora (en tu horario local)
+            <label className="flex flex-col gap-1 text-sm text-amber-100/80">
+              Date and time (your local time)
               <input
                 required
                 type="datetime-local"
                 min={minDateTimeLocal()}
                 value={proposedLocal}
                 onChange={(e) => setProposedLocal(e.target.value)}
-                className="rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-900"
+                className="rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-amber-50 focus:border-amber-400 focus:outline-none"
               />
             </label>
             <button
               type="submit"
               disabled={busy || !proposedLocal}
-              className="rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
+              className="rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
             >
-              Proponer
+              Propose
             </button>
           </form>
           {proposedLocal && opponent && (
-            <p className="mt-2 text-xs text-slate-500">
-              Para {opponent.nickname} sería:{' '}
+            <p className="mt-2 text-xs text-amber-100/50">
+              For {opponent.nickname} that would be:{' '}
               {formatInZone(localInputToUtcIso(proposedLocal), opponent.timezone)}
             </p>
           )}
@@ -225,19 +225,19 @@ export function MatchDetail() {
 
       {pendingProposals.length > 0 && (
         <section>
-          <h2 className="mb-2 font-bold">Propuestas de horario</h2>
+          <h2 className="mb-2 font-bold text-amber-50">Proposed times</h2>
           <div className="flex flex-col gap-2">
             {pendingProposals.map((p) => (
               <div
                 key={p.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-800"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-500/15 bg-emerald-950/50 px-4 py-3 backdrop-blur-sm"
               >
                 <div>
-                  <p className="text-sm font-medium">Propuesto por {p.proposed_by_profile?.nickname}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm font-medium text-amber-50">Proposed by {p.proposed_by_profile?.nickname}</p>
+                  <p className="text-xs text-amber-100/50">
                     {match.player1?.nickname}: {formatInZone(p.proposed_at, match.player1?.timezone ?? 'UTC')}
                   </p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-amber-100/50">
                     {match.player2?.nickname}: {formatInZone(p.proposed_at, match.player2?.timezone ?? 'UTC')}
                   </p>
                 </div>
@@ -246,16 +246,16 @@ export function MatchDetail() {
                     <button
                       onClick={() => respond(p.id, true)}
                       disabled={busy}
-                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-500"
+                      className="rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-3 py-1.5 text-sm font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500"
                     >
-                      Aceptar
+                      Accept
                     </button>
                     <button
                       onClick={() => respond(p.id, false)}
                       disabled={busy}
-                      className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:border-red-400 dark:border-slate-700"
+                      className="rounded-lg border border-amber-400/30 px-3 py-1.5 text-sm text-amber-100 hover:border-red-400/60 hover:text-red-300"
                     >
-                      Rechazar
+                      Decline
                     </button>
                   </div>
                 )}
@@ -267,56 +267,56 @@ export function MatchDetail() {
 
       {isParticipant && match.status === 'scheduled' && match.player1 && match.player2 && (
         <section>
-          <h2 className="mb-2 font-bold">Reportar resultado</h2>
+          <h2 className="mb-2 font-bold text-amber-50">Report result</h2>
           <div className="flex gap-3">
             <button
               onClick={() => reportWinner(match.player1!.id)}
               disabled={busy}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm hover:border-emerald-500 dark:border-slate-700"
+              className="rounded-lg border border-amber-400/30 px-3 py-2 text-sm text-amber-100 hover:border-amber-400 hover:bg-amber-400/10"
             >
-              Ganó {match.player1.nickname}
+              {match.player1.nickname} won
             </button>
             <button
               onClick={() => reportWinner(match.player2!.id)}
               disabled={busy}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm hover:border-emerald-500 dark:border-slate-700"
+              className="rounded-lg border border-amber-400/30 px-3 py-2 text-sm text-amber-100 hover:border-amber-400 hover:bg-amber-400/10"
             >
-              Ganó {match.player2.nickname}
+              {match.player2.nickname} won
             </button>
           </div>
         </section>
       )}
 
       {match.status === 'awaiting_confirmation' && (
-        <section className="rounded-xl border border-purple-400 bg-purple-500/5 p-4">
-          <p className="text-sm">
+        <section className="rounded-2xl border border-purple-400/30 bg-purple-400/5 p-4">
+          <p className="text-sm text-amber-100/80">
             {match.reported_by === profile?.id
-              ? 'Reportaste el resultado. Esperando que tu rival lo confirme.'
-              : `Tu rival reportó como ganador a ${
+              ? 'You reported the result. Waiting for your opponent to confirm it.'
+              : `Your opponent reported ${
                   match.reported_winner_id === match.player1_id ? match.player1?.nickname : match.player2?.nickname
-                }.`}
+                } as the winner.`}
           </p>
           {isParticipant && match.reported_by !== profile?.id && (
             <button
               onClick={confirmResult}
               disabled={busy}
-              className="mt-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+              className="mt-2 rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 text-sm font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500"
             >
-              Confirmar resultado
+              Confirm result
             </button>
           )}
         </section>
       )}
 
       {match.status === 'completed' && (
-        <p className="font-semibold text-emerald-600">
-          🏆 Ganó {match.winner_id === match.player1_id ? match.player1?.nickname : match.player2?.nickname}
+        <p className="font-semibold text-amber-300">
+          🏆 {match.winner_id === match.player1_id ? match.player1?.nickname : match.player2?.nickname} won
         </p>
       )}
 
       {isParticipant && match.player1 && match.player2 && (
         <section>
-          <h2 className="mb-2 font-bold">Chat del partido</h2>
+          <h2 className="mb-2 font-bold text-amber-50">Match chat</h2>
           <Chat matchId={match.id} messages={messages} onMessagesChange={setMessages} />
         </section>
       )}
@@ -334,9 +334,9 @@ function PlayerChip({
   bye?: boolean
 }) {
   return (
-    <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${highlight ? 'border-emerald-400 bg-emerald-500/10' : 'border-slate-200 dark:border-slate-800'}`}>
+    <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 ${highlight ? 'border-amber-400/50 bg-amber-400/10' : 'border-amber-500/15 bg-emerald-950/50'}`}>
       <span className="text-xl">{player?.avatar_url ?? '❔'}</span>
-      <span className="font-semibold">{bye ? 'Bye' : (player?.nickname ?? 'Por definir')}</span>
+      <span className="font-semibold text-amber-50">{bye ? 'Bye' : (player?.nickname ?? 'TBD')}</span>
     </div>
   )
 }

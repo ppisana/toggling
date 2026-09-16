@@ -34,7 +34,7 @@ export function AdminClub() {
   }, [])
 
   if (!profile?.is_admin) {
-    return <p className="text-slate-500">Solo la administradora puede ver esta página.</p>
+    return <p className="text-amber-100/60">Only the club administrator can view this page.</p>
   }
 
   async function handleRegenerateCode() {
@@ -45,7 +45,7 @@ export function AdminClub() {
       if (rpcError) throw rpcError
       await refresh()
     } catch (err) {
-      setError(errorMessage(err, 'No se pudo regenerar el código'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -63,7 +63,7 @@ export function AdminClub() {
       setTournamentName('')
       navigate(`/tournament/${data as string}`)
     } catch (err) {
-      setError(errorMessage(err, 'No se pudo crear el torneo'))
+      setError(errorMessage(err))
     } finally {
       setBusy(false)
     }
@@ -73,73 +73,72 @@ export function AdminClub() {
 
   return (
     <div className="flex flex-col gap-8">
-      <section>
-        <h2 className="mb-2 text-lg font-bold">Invitar jugadores</h2>
-        <p className="text-sm text-slate-500">
-          Compartí este código o link con los socios del club. Al entrar eligen su nickname, avatar
-          y huso horario — nunca piden mail ni teléfono.
+      <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-5 backdrop-blur-sm">
+        <h2 className="font-display mb-2 text-lg font-bold text-amber-50">Invite players</h2>
+        <p className="text-sm text-amber-100/60">
+          Share this code or link with club members. When they join they pick a nickname, avatar
+          and time zone — never an email or phone number.
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <code className="rounded-lg bg-slate-100 px-4 py-2 text-lg font-bold tracking-widest dark:bg-slate-800">
+          <code className="rounded-lg border border-amber-400/30 bg-emerald-900/60 px-4 py-2 text-lg font-bold tracking-widest text-amber-300">
             {club?.invite_code}
           </code>
           <input
             readOnly
             value={inviteLink}
             onFocus={(e) => e.currentTarget.select()}
-            className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+            className="min-w-0 flex-1 rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-sm text-amber-50"
           />
           <button
             onClick={handleRegenerateCode}
             disabled={busy}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm hover:border-emerald-500 dark:border-slate-700"
+            className="rounded-lg border border-amber-400/30 px-3 py-2 text-sm text-amber-100 hover:border-amber-400 hover:bg-amber-400/10"
           >
-            Regenerar código
+            Regenerate code
           </button>
         </div>
       </section>
 
-      <section>
-        <h2 className="mb-2 text-lg font-bold">Crear torneo</h2>
+      <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/60 p-5 backdrop-blur-sm">
+        <h2 className="font-display mb-2 text-lg font-bold text-amber-50">Create tournament</h2>
         <form onSubmit={handleCreateTournament} className="flex flex-wrap gap-3">
           <input
             required
             value={tournamentName}
             onChange={(e) => setTournamentName(e.target.value)}
-            placeholder="Ej: Knock-out Primavera 2026"
-            className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 dark:border-slate-700 dark:bg-slate-900"
+            placeholder="e.g. Spring Knockout 2026"
+            className="min-w-0 flex-1 rounded-lg border border-emerald-700/60 bg-emerald-950/40 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
           />
           <button
             type="submit"
             disabled={busy}
-            className="rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
+            className="rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 px-4 py-2 font-semibold text-emerald-950 hover:from-amber-300 hover:to-amber-500 disabled:opacity-50"
           >
-            Crear
+            Create
           </button>
         </form>
-        <p className="mt-2 text-xs text-slate-500">
-          Después de crearlo vas a poder elegir los participantes y generar el cuadro de forma
-          aleatoria.
+        <p className="mt-2 text-xs text-amber-100/50">
+          After creating it you'll be able to pick participants and generate the bracket at random.
         </p>
       </section>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-red-400">{error}</p>}
 
       <section>
-        <h2 className="mb-2 text-lg font-bold">Socios del club ({members.length})</h2>
+        <h2 className="font-display mb-2 text-lg font-bold text-amber-50">Club members ({members.length})</h2>
         {loading ? (
-          <p className="text-slate-400">Cargando…</p>
+          <p className="text-amber-100/60">Loading…</p>
         ) : (
           <ul className="flex flex-col gap-1">
             {members.map((m) => (
               <li
                 key={m.id}
-                className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-800"
+                className="flex items-center gap-2 rounded-lg border border-amber-500/15 bg-emerald-950/50 px-3 py-2 text-sm backdrop-blur-sm"
               >
                 <span className="text-lg">{m.avatar_url}</span>
-                <span className="font-medium">{m.nickname}</span>
+                <span className="font-medium text-amber-50">{m.nickname}</span>
                 {m.is_admin && (
-                  <span className="ml-auto rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-600">
+                  <span className="ml-auto rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-xs text-amber-300">
                     Admin
                   </span>
                 )}

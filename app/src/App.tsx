@@ -12,15 +12,15 @@ function Gate({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-slate-400">
-        Cargando…
+      <div className="flex min-h-screen items-center justify-center text-amber-100/50">
+        Loading…
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center px-4 text-center text-red-500">
+      <div className="flex min-h-screen items-center justify-center px-4 text-center text-red-400">
         {error}
       </div>
     )

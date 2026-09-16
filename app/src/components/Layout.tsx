@@ -6,9 +6,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-slate-200 dark:border-slate-800">
+      <header className="border-b border-amber-500/15 bg-emerald-950/50 backdrop-blur-sm">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-          <Link to="/club" className="flex items-center gap-2 font-bold">
+          <Link to="/club" className="font-display flex items-center gap-2 text-lg font-bold tracking-tight text-amber-50">
             <span className="text-xl">⛳</span>
             <span>{club?.name ?? 'Country Club'}</span>
           </Link>
@@ -16,14 +16,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
             {profile?.is_admin && (
               <Link
                 to="/club/admin"
-                className="rounded-lg border border-slate-300 px-3 py-1.5 hover:border-emerald-500 dark:border-slate-700"
+                className="rounded-lg border border-amber-400/30 px-3 py-1.5 text-amber-100 hover:border-amber-400 hover:bg-amber-400/10"
               >
-                Administrar
+                Manage
               </Link>
             )}
-            <div className="flex items-center gap-2 rounded-full border border-slate-300 px-3 py-1.5 dark:border-slate-700">
+            <div className="flex items-center gap-2 rounded-full border border-amber-500/20 bg-emerald-900/40 px-3 py-1.5">
               <span className="text-lg leading-none">{profile?.avatar_url}</span>
-              <span className="font-medium">{profile?.nickname}</span>
+              <span className="font-medium text-amber-50">{profile?.nickname}</span>
             </div>
           </div>
         </div>

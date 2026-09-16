@@ -14,7 +14,7 @@ export function BracketView({ matches, meId }: { matches: MatchWithPlayers[]; me
     <div className="flex gap-6 overflow-x-auto pb-4">
       {rounds.map((round) => (
         <div key={round} className="flex min-w-[220px] flex-col gap-4">
-          <h3 className="text-center text-sm font-bold uppercase tracking-wide text-slate-500">
+          <h3 className="text-center text-sm font-bold uppercase tracking-wide text-amber-300/80">
             {roundLabel(round, rounds.length)}
           </h3>
           {matches
@@ -24,10 +24,10 @@ export function BracketView({ matches, meId }: { matches: MatchWithPlayers[]; me
               <Link
                 key={m.id}
                 to={`/match/${m.id}`}
-                className={`flex flex-col gap-2 rounded-xl border px-3 py-2 text-sm transition hover:border-emerald-500 ${
+                className={`flex flex-col gap-2 rounded-xl border px-3 py-2 text-sm backdrop-blur-sm transition hover:border-amber-400/60 ${
                   meId && (m.player1_id === meId || m.player2_id === meId)
-                    ? 'border-emerald-400 bg-emerald-500/5'
-                    : 'border-slate-200 dark:border-slate-800'
+                    ? 'border-amber-400/50 bg-amber-400/5'
+                    : 'border-amber-500/15 bg-emerald-950/50'
                 }`}
               >
                 <PlayerRow player={m.player1} isWinner={m.winner_id === m.player1_id} />
@@ -51,10 +51,10 @@ function PlayerRow({
   bye?: boolean
 }) {
   return (
-    <div className={`flex items-center gap-2 ${isWinner ? 'font-bold' : ''}`}>
+    <div className={`flex items-center gap-2 text-amber-50 ${isWinner ? 'font-bold' : ''}`}>
       <span>{player?.avatar_url ?? '❔'}</span>
-      <span className="truncate">{bye ? 'Bye' : (player?.nickname ?? 'Por definir')}</span>
-      {isWinner && <span className="ml-auto text-emerald-500">🏆</span>}
+      <span className="truncate">{bye ? 'Bye' : (player?.nickname ?? 'TBD')}</span>
+      {isWinner && <span className="ml-auto text-amber-400">🏆</span>}
     </div>
   )
 }
@@ -63,6 +63,6 @@ function roundLabel(round: number, totalRounds: number): string {
   const remaining = totalRounds - round
   if (remaining === 0) return 'Final'
   if (remaining === 1) return 'Semifinal'
-  if (remaining === 2) return 'Cuartos de final'
-  return `Ronda ${round}`
+  if (remaining === 2) return 'Quarterfinal'
+  return `Round ${round}`
 }

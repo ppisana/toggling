@@ -47,14 +47,14 @@ export function Dashboard() {
     }
   }, [profile])
 
-  if (loading) return <p className="text-slate-400">Cargando…</p>
+  if (loading) return <p className="text-amber-100/60">Loading…</p>
 
   return (
     <div className="flex flex-col gap-8">
       <section>
-        <h2 className="mb-3 text-lg font-bold">Mis partidos</h2>
+        <h2 className="font-display mb-3 text-lg font-bold text-amber-50">My matches</h2>
         {myMatches.length === 0 ? (
-          <p className="text-sm text-slate-500">Todavía no tenés cruces asignados.</p>
+          <p className="text-sm text-amber-100/60">You don't have any matches assigned yet.</p>
         ) : (
           <div className="flex flex-col gap-2">
             {myMatches.map((m) => {
@@ -63,17 +63,17 @@ export function Dashboard() {
                 <Link
                   key={m.id}
                   to={`/match/${m.id}`}
-                  className="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3 hover:border-emerald-500 dark:border-slate-800"
+                  className="flex items-center justify-between rounded-xl border border-amber-500/15 bg-emerald-950/50 px-4 py-3 backdrop-blur-sm hover:border-amber-400/50"
                 >
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-500">
-                      {m.tournaments?.name} · Ronda {m.round}
+                    <p className="text-xs uppercase tracking-wide text-amber-100/50">
+                      {m.tournaments?.name} · Round {m.round}
                     </p>
-                    <p className="font-semibold">
-                      {opponent ? `${opponent.avatar_url} ${opponent.nickname}` : 'Bye (avanzás directo)'}
+                    <p className="font-semibold text-amber-50">
+                      {opponent ? `${opponent.avatar_url} ${opponent.nickname}` : 'Bye (you advance automatically)'}
                     </p>
                     {m.scheduled_at && (
-                      <p className="text-xs text-slate-500">{formatLocal(m.scheduled_at)}</p>
+                      <p className="text-xs text-amber-100/50">{formatLocal(m.scheduled_at)}</p>
                     )}
                   </div>
                   <MatchStatusBadge status={m.status} />
@@ -85,10 +85,10 @@ export function Dashboard() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-bold">Torneos de {club?.name}</h2>
+        <h2 className="font-display mb-3 text-lg font-bold text-amber-50">{club?.name} tournaments</h2>
         {tournaments.length === 0 ? (
-          <p className="text-sm text-slate-500">
-            Todavía no hay torneos. {profile?.is_admin ? 'Creá uno desde Administrar.' : 'Esperá a que la administradora organice uno.'}
+          <p className="text-sm text-amber-100/60">
+            No tournaments yet. {profile?.is_admin ? 'Create one from Manage.' : 'Wait for the administrator to set one up.'}
           </p>
         ) : (
           <div className="flex flex-col gap-2">
@@ -96,10 +96,10 @@ export function Dashboard() {
               <Link
                 key={t.id}
                 to={`/tournament/${t.id}`}
-                className="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3 hover:border-emerald-500 dark:border-slate-800"
+                className="flex items-center justify-between rounded-xl border border-amber-500/15 bg-emerald-950/50 px-4 py-3 backdrop-blur-sm hover:border-amber-400/50"
               >
-                <span className="font-semibold">{t.name}</span>
-                <span className="text-xs uppercase tracking-wide text-slate-500">{t.status}</span>
+                <span className="font-semibold text-amber-50">{t.name}</span>
+                <span className="text-xs uppercase tracking-wide text-amber-100/50">{t.status}</span>
               </Link>
             ))}
           </div>
