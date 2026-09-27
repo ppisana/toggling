@@ -34,6 +34,7 @@ export function MatchDetail() {
   const [holesRemaining, setHolesRemaining] = useState('')
   const [player1Score, setPlayer1Score] = useState('')
   const [player2Score, setPlayer2Score] = useState('')
+  const [showCorrection, setShowCorrection] = useState(false)
 
   const load = useCallback(async () => {
     if (!matchId) return
@@ -92,6 +93,22 @@ export function MatchDetail() {
     return match.player1_id === profile.id ? match.player2 : match.player1
   }, [profile, match])
 
+  const scoreError = useMemo(() => {
+    if (scoreType !== 'stroke_play' || !reportWinnerId || player1Score === '' || player2Score === '' || !match) {
+      return null
+    }
+    const p1 = Number(player1Score)
+    const p2 = Number(player2Score)
+    if (p1 === p2) return "Scores are tied — stroke play needs a winner with the lower score."
+    const winnerScore = reportWinnerId === match.player1_id ? p1 : p2
+    const otherScore = reportWinnerId === match.player1_id ? p2 : p1
+    if (winnerScore > otherScore) {
+      const actualWinner = reportWinnerId === match.player1_id ? match.player2?.nickname : match.player1?.nickname
+      return `${actualWinner} actually has the lower score — check who really won.`
+    }
+    return null
+  }, [scoreType, reportWinnerId, player1Score, player2Score, match])
+
   if (loading) return <p className="text-amber-100/60">Loading…</p>
   if (!match) return <p className="text-amber-100/60">Match not found.</p>
 
@@ -134,7 +151,7 @@ export function MatchDetail() {
 
   async function submitResult(e: React.FormEvent) {
     e.preventDefault()
-    if (!reportWinnerId) return
+    if (!reportWinnerId || scoreError) return
     setBusy(true)
     setError(null)
     try {
@@ -153,6 +170,7 @@ export function MatchDetail() {
       setHolesRemaining('')
       setPlayer1Score('')
       setPlayer2Score('')
+      setShowCorrection(false)
       await load()
     } catch (err) {
       setError(errorMessage(err))
@@ -285,9 +303,15 @@ export function MatchDetail() {
         </section>
       )}
 
-      {isParticipant && match.status === 'scheduled' && match.player1 && match.player2 && (
+      {isParticipant &&
+        match.player1 &&
+        match.player2 &&
+        (match.status === 'scheduled' ||
+          (match.status === 'awaiting_confirmation' && showCorrection && match.reported_by !== profile?.id)) && (
         <section className="rounded-2xl border border-amber-500/20 bg-emerald-950/90 p-4 backdrop-blur-sm">
-          <h2 className="mb-2 font-bold text-amber-50">Report result</h2>
+          <h2 className="mb-2 font-bold text-amber-50">
+            {match.status === 'awaiting_confirmation' ? 'Enter the correct result' : 'Report result'}
+          </h2>
           <form onSubmit={submitResult} className="flex flex-col gap-4">
             <div className="flex gap-3">
               <button
@@ -397,9 +421,11 @@ export function MatchDetail() {
               </div>
             )}
 
+            {scoreError && <p className="text-sm text-red-400">{scoreError}</p>}
+
             <button
               type="submit"
-              disabled={busy || !reportWinnerId}
+              disabled={busy || !reportWinnerId || !!scoreError}
               className="self-start rounded-lg bg-gradient-to-b from-lime-400 to-green-600 px-4 py-2 text-sm font-semibold text-emerald-950 hover:from-lime-300 hover:to-green-500 disabled:opacity-50"
             >
               Submit result
@@ -418,13 +444,39 @@ export function MatchDetail() {
                 } as the winner.`}
             {formatMatchScore(match) && <span className="text-amber-100/50"> · {formatMatchScore(match)}</span>}
           </p>
-          {isParticipant && match.reported_by !== profile?.id && (
+          {isParticipant && match.reported_by !== profile?.id && !showCorrection && (
+            <div className="mt-2 flex flex-wrap gap-3">
+              <button
+                onClick={confirmResult}
+                disabled={busy}
+                className="rounded-lg bg-gradient-to-b from-lime-400 to-green-600 px-4 py-2 text-sm font-semibold text-emerald-950 hover:from-lime-300 hover:to-green-500"
+              >
+                Confirm result
+              </button>
+              <button
+                onClick={() => {
+                  setReportWinnerId(match.reported_winner_id)
+                  if (match.score_type) setScoreType(match.score_type)
+                  setHolesUp(match.match_play_holes_up?.toString() ?? '')
+                  setHolesRemaining(match.match_play_holes_remaining?.toString() ?? '')
+                  setPlayer1Score(match.player1_score_to_par?.toString() ?? '')
+                  setPlayer2Score(match.player2_score_to_par?.toString() ?? '')
+                  setShowCorrection(true)
+                }}
+                disabled={busy}
+                className="rounded-lg border border-amber-400/30 px-4 py-2 text-sm text-amber-100 hover:border-amber-400 hover:bg-amber-400/10"
+              >
+                This isn't right — fix it
+              </button>
+            </div>
+          )}
+          {showCorrection && (
             <button
-              onClick={confirmResult}
+              onClick={() => setShowCorrection(false)}
               disabled={busy}
-              className="mt-2 rounded-lg bg-gradient-to-b from-lime-400 to-green-600 px-4 py-2 text-sm font-semibold text-emerald-950 hover:from-lime-300 hover:to-green-500"
+              className="mt-2 text-sm text-amber-100/60 hover:text-amber-300"
             >
-              Confirm result
+              ← Never mind, the result was right
             </button>
           )}
         </section>
