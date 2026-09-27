@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthProvider'
 import type { MatchMessage } from '../lib/types'
+import { errorMessage } from '../lib/errors'
 
 export function Chat({
   matchId,
@@ -15,6 +16,7 @@ export function Chat({
   const { profile } = useAuth()
   const [text, setText] = useState('')
   const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -40,11 +42,18 @@ export function Chat({
 
   async function send(e: React.FormEvent) {
     e.preventDefault()
-    if (!text.trim()) return
+    if (!text.trim() || !profile) return
     setSending(true)
+    setError(null)
     const body = text.trim()
-    setText('')
-    await supabase.from('match_messages').insert({ match_id: matchId, body })
+    const { error: insertError } = await supabase
+      .from('match_messages')
+      .insert({ match_id: matchId, sender_id: profile.id, body })
+    if (insertError) {
+      setError(errorMessage(insertError))
+    } else {
+      setText('')
+    }
     setSending(false)
   }
 
@@ -66,6 +75,7 @@ export function Chat({
         ))}
         <div ref={bottomRef} />
       </div>
+      {error && <p className="text-sm text-red-400">{error}</p>}
       <form onSubmit={send} className="flex gap-2">
         <input
           value={text}
