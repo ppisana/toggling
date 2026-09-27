@@ -131,12 +131,19 @@ export function Landing() {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-10">
-      <button
-        onClick={() => setMode('choose')}
-        className="mb-4 self-start text-sm text-amber-100/60 hover:text-amber-300"
-      >
-        ← Back
-      </button>
+      <div className="mb-4 flex items-center justify-between">
+        <button onClick={() => setMode('choose')} className="text-sm text-amber-100/60 hover:text-amber-300">
+          ← Back
+        </button>
+        {alreadySignedIn && (
+          <button
+            onClick={() => supabase.auth.signOut()}
+            className="text-sm text-amber-100/60 hover:text-amber-300"
+          >
+            Not you? Sign out
+          </button>
+        )}
+      </div>
       <div className="rounded-2xl border border-amber-500/20 bg-emerald-950/90 p-6 shadow-lg shadow-black/30 backdrop-blur-sm">
         <h1 className="font-display text-xl font-bold text-amber-50">
           {isCreate ? 'Start your Country Club' : 'Join a Country Club'}

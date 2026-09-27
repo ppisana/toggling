@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthProvider'
 import { SecureAccountBanner } from './SecureAccountBanner'
 
@@ -26,6 +27,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <span className="text-lg leading-none">{profile?.avatar_url}</span>
               <span className="font-medium text-amber-50">{profile?.nickname}</span>
             </div>
+            <button
+              onClick={() => supabase.auth.signOut()}
+              className="text-amber-100/50 hover:text-amber-300"
+              title="Sign out"
+            >
+              Sign out
+            </button>
           </div>
         </div>
       </header>
