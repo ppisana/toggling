@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthProvider'
 import type { Match, Tournament } from '../lib/types'
 import { MatchStatusBadge } from '../components/MatchStatusBadge'
 import { ClubMembers } from '../components/ClubMembers'
+import { PageBackground } from '../components/PageBackground'
 import { formatLocal } from '../lib/dates'
 
 type MatchWithPlayers = Match & {
@@ -67,7 +68,9 @@ export function Dashboard() {
   )
 
   return (
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px]">
+    <>
+      <PageBackground src="/club-home-bg.jpg" />
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px]">
       <div className="flex flex-col gap-8">
         <section>
           <h2 className="font-display mb-3 text-lg font-bold text-amber-50">My matches</h2>
@@ -125,7 +128,8 @@ export function Dashboard() {
         </section>
       </div>
 
-      <ClubMembers />
-    </div>
+        <ClubMembers />
+      </div>
+    </>
   )
 }
