@@ -51,10 +51,13 @@ export function TournamentView() {
   const rounds = matches.map((m) => m.round)
   const currentRound = rounds.length ? Math.max(...rounds) : 0
   const currentRoundMatches = matches.filter((m) => m.round === currentRound)
+  // The DB flips the tournament to 'completed' as soon as its last match is
+  // decided (see maybe_complete_tournament), so a round still needing
+  // "Generate next round" is simply any completed round on a tournament
+  // that's still 'active'.
   const currentRoundDone =
     currentRoundMatches.length > 0 &&
     currentRoundMatches.every((m) => m.status === 'completed' || m.status === 'bye')
-  const isFinalDone = currentRoundDone && currentRoundMatches.length === 1
 
   async function handleGenerateBracket() {
     setBusy(true)
@@ -142,7 +145,7 @@ export function TournamentView() {
 
       {matches.length > 0 && <BracketView matches={matches} meId={profile?.id} />}
 
-      {profile?.is_admin && tournament.status === 'active' && currentRoundDone && !isFinalDone && (
+      {profile?.is_admin && tournament.status === 'active' && currentRoundDone && (
         <button
           onClick={handleAdvanceRound}
           disabled={busy}
@@ -152,7 +155,9 @@ export function TournamentView() {
         </button>
       )}
 
-      {isFinalDone && <p className="font-semibold text-amber-300">🏆 Tournament complete!</p>}
+      {tournament.status === 'completed' && (
+        <p className="font-semibold text-amber-300">🏆 Tournament complete!</p>
+      )}
     </div>
   )
 }

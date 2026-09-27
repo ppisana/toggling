@@ -1,6 +1,7 @@
 export type MatchStatus = 'pending' | 'scheduled' | 'awaiting_confirmation' | 'completed' | 'bye'
 export type TournamentStatus = 'draft' | 'active' | 'completed'
 export type ProposalStatus = 'pending' | 'accepted' | 'declined' | 'cancelled'
+export type ScoreType = 'match_play' | 'stroke_play'
 
 export interface Club {
   id: string
@@ -41,6 +42,11 @@ export interface Match {
   status: MatchStatus
   scheduled_at: string | null
   created_at: string
+  score_type: ScoreType | null
+  match_play_holes_up: number | null
+  match_play_holes_remaining: number | null
+  player1_score_to_par: number | null
+  player2_score_to_par: number | null
 }
 
 export interface MatchProposal {

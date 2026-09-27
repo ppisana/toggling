@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { Match } from '../lib/types'
 import { MatchStatusBadge } from './MatchStatusBadge'
+import { formatMatchScore } from '../lib/golfScore'
 
 type MatchWithPlayers = Match & {
   player1: { nickname: string; avatar_url: string | null } | null
@@ -32,6 +33,7 @@ export function BracketView({ matches, meId }: { matches: MatchWithPlayers[]; me
               >
                 <PlayerRow player={m.player1} isWinner={m.winner_id === m.player1_id} />
                 <PlayerRow player={m.player2} isWinner={m.winner_id === m.player2_id} bye={!m.player2_id} />
+                {formatMatchScore(m) && <p className="text-xs text-amber-100/50">{formatMatchScore(m)}</p>}
                 <MatchStatusBadge status={m.status} />
               </Link>
             ))}
