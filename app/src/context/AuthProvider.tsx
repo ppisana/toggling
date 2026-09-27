@@ -3,7 +3,6 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import type { Club, Profile } from '../lib/types'
 import { errorMessage } from '../lib/errors'
-import { consumePendingSignup } from '../lib/pendingSignup'
 
 interface AuthState {
   loading: boolean
@@ -56,28 +55,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setClub(null)
         return
       }
-
-      const profileRow = await loadProfileAndClub(activeSession.user.id)
-      if (!profileRow) {
-        // Freshly verified a magic link with no profile yet -- finish the
-        // club they were creating/joining, if there's one stashed. The magic
-        // link can be opened in a second tab while the original tab is still
-        // alive, and Supabase broadcasts the new session to both, so this can
-        // race with another tab doing the same thing -- consumePendingSignup
-        // treats "you already belong to a club" as a benign no-op rather than
-        // an error for exactly that reason.
-        await consumePendingSignup()
-        await loadProfileAndClub(activeSession.user.id)
-      }
+      await loadProfileAndClub(activeSession.user.id)
     },
     [loadProfileAndClub],
   )
 
   // Supabase fires an 'INITIAL_SESSION' event on the onAuthStateChange
-  // listener in addition to resolving our own getSession() call, so without
-  // serializing them two concurrent runs could both see "no profile yet" and
-  // both try to finish the same pending club signup. Chain each run onto the
-  // previous one instead of letting them race.
+  // listener in addition to resolving our own getSession() call. Chaining
+  // each run onto the previous one (instead of letting them fire in
+  // parallel) keeps profile/club state from two overlapping loads
+  // clobbering each other out of order.
   const queueRef = useRef(Promise.resolve())
 
   useEffect(() => {
