@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthProvider'
+import { SecureAccountBanner } from './SecureAccountBanner'
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { profile, club } = useAuth()
+  const { profile, club, session } = useAuth()
 
   return (
     <div className="min-h-screen">
@@ -28,6 +29,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
+      {session?.user.is_anonymous && <SecureAccountBanner />}
       <main className="mx-auto max-w-3xl px-4 py-6">{children}</main>
     </div>
   )
