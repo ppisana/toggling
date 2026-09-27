@@ -4,12 +4,22 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthProvider'
 import type { Match, Tournament } from '../lib/types'
 import { MatchStatusBadge } from '../components/MatchStatusBadge'
+import { ClubMembers } from '../components/ClubMembers'
 import { formatLocal } from '../lib/dates'
 
 type MatchWithPlayers = Match & {
   player1: { nickname: string; avatar_url: string | null } | null
   player2: { nickname: string; avatar_url: string | null } | null
   tournaments: { name: string } | null
+}
+
+const MATCH_RECENCY_DAYS = 5
+const TOURNAMENT_RECENCY_DAYS = 7
+
+function isRecent(completedAt: string | null, days: number): boolean {
+  if (!completedAt) return true
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000
+  return new Date(completedAt).getTime() >= cutoff
 }
 
 export function Dashboard() {
@@ -49,62 +59,73 @@ export function Dashboard() {
 
   if (loading) return <p className="text-amber-100/60">Loading…</p>
 
+  const visibleMatches = myMatches.filter(
+    (m) => (m.status !== 'completed' && m.status !== 'bye') || isRecent(m.completed_at, MATCH_RECENCY_DAYS),
+  )
+  const visibleTournaments = tournaments.filter(
+    (t) => t.status !== 'completed' || isRecent(t.completed_at, TOURNAMENT_RECENCY_DAYS),
+  )
+
   return (
-    <div className="flex flex-col gap-8">
-      <section>
-        <h2 className="font-display mb-3 text-lg font-bold text-amber-50">My matches</h2>
-        {myMatches.length === 0 ? (
-          <p className="text-sm text-amber-100/60">You don't have any matches assigned yet.</p>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {myMatches.map((m) => {
-              const opponent = m.player1_id === profile?.id ? m.player2 : m.player1
-              return (
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_220px]">
+      <div className="flex flex-col gap-8">
+        <section>
+          <h2 className="font-display mb-3 text-lg font-bold text-amber-50">My matches</h2>
+          {visibleMatches.length === 0 ? (
+            <p className="text-sm text-amber-100/60">You don't have any matches assigned yet.</p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {visibleMatches.map((m) => {
+                const opponent = m.player1_id === profile?.id ? m.player2 : m.player1
+                return (
+                  <Link
+                    key={m.id}
+                    to={`/match/${m.id}`}
+                    className="flex items-center justify-between rounded-xl border border-amber-500/15 bg-emerald-950/85 px-4 py-3 backdrop-blur-sm hover:border-amber-400/50"
+                  >
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-amber-100/50">
+                        {m.tournaments?.name} · Round {m.round}
+                      </p>
+                      <p className="font-semibold text-amber-50">
+                        {opponent ? `${opponent.avatar_url} ${opponent.nickname}` : 'Bye (you advance automatically)'}
+                      </p>
+                      {m.scheduled_at && (
+                        <p className="text-xs text-amber-100/50">{formatLocal(m.scheduled_at)}</p>
+                      )}
+                    </div>
+                    <MatchStatusBadge status={m.status} />
+                  </Link>
+                )
+              })}
+            </div>
+          )}
+        </section>
+
+        <section>
+          <h2 className="font-display mb-3 text-lg font-bold text-amber-50">{club?.name} tournaments</h2>
+          {visibleTournaments.length === 0 ? (
+            <p className="text-sm text-amber-100/60">
+              No tournaments yet. {profile?.is_admin ? 'Create one from Manage.' : 'Wait for the administrator to set one up.'}
+            </p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {visibleTournaments.map((t) => (
                 <Link
-                  key={m.id}
-                  to={`/match/${m.id}`}
+                  key={t.id}
+                  to={`/tournament/${t.id}`}
                   className="flex items-center justify-between rounded-xl border border-amber-500/15 bg-emerald-950/85 px-4 py-3 backdrop-blur-sm hover:border-amber-400/50"
                 >
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-amber-100/50">
-                      {m.tournaments?.name} · Round {m.round}
-                    </p>
-                    <p className="font-semibold text-amber-50">
-                      {opponent ? `${opponent.avatar_url} ${opponent.nickname}` : 'Bye (you advance automatically)'}
-                    </p>
-                    {m.scheduled_at && (
-                      <p className="text-xs text-amber-100/50">{formatLocal(m.scheduled_at)}</p>
-                    )}
-                  </div>
-                  <MatchStatusBadge status={m.status} />
+                  <span className="font-semibold text-amber-50">{t.name}</span>
+                  <span className="text-xs uppercase tracking-wide text-amber-100/50">{t.status}</span>
                 </Link>
-              )
-            })}
-          </div>
-        )}
-      </section>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
 
-      <section>
-        <h2 className="font-display mb-3 text-lg font-bold text-amber-50">{club?.name} tournaments</h2>
-        {tournaments.length === 0 ? (
-          <p className="text-sm text-amber-100/60">
-            No tournaments yet. {profile?.is_admin ? 'Create one from Manage.' : 'Wait for the administrator to set one up.'}
-          </p>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {tournaments.map((t) => (
-              <Link
-                key={t.id}
-                to={`/tournament/${t.id}`}
-                className="flex items-center justify-between rounded-xl border border-amber-500/15 bg-emerald-950/85 px-4 py-3 backdrop-blur-sm hover:border-amber-400/50"
-              >
-                <span className="font-semibold text-amber-50">{t.name}</span>
-                <span className="text-xs uppercase tracking-wide text-amber-100/50">{t.status}</span>
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
+      <ClubMembers />
     </div>
   )
 }

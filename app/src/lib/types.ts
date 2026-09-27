@@ -27,6 +27,7 @@ export interface Tournament {
   status: TournamentStatus
   created_by: string | null
   created_at: string
+  completed_at: string | null
 }
 
 export interface Match {
@@ -42,6 +43,7 @@ export interface Match {
   status: MatchStatus
   scheduled_at: string | null
   created_at: string
+  completed_at: string | null
   score_type: ScoreType | null
   match_play_holes_up: number | null
   match_play_holes_remaining: number | null
