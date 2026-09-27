@@ -33,21 +33,27 @@ export async function consumePendingSignup(): Promise<void> {
   const payload = JSON.parse(raw) as PendingSignup
   if (Date.now() - payload.stashedAt > MAX_AGE_MS) return
 
-  if (payload.kind === 'create') {
-    const { error } = await supabase.rpc('create_club', {
-      p_name: payload.clubName,
-      p_nickname: payload.nickname,
-      p_avatar_url: payload.avatarUrl,
-      p_timezone: payload.timezone,
-    })
-    if (error) throw error
-  } else {
-    const { error } = await supabase.rpc('join_club', {
-      p_code: payload.code,
-      p_nickname: payload.nickname,
-      p_avatar_url: payload.avatarUrl,
-      p_timezone: payload.timezone,
-    })
-    if (error) throw error
+  const { error } =
+    payload.kind === 'create'
+      ? await supabase.rpc('create_club', {
+          p_name: payload.clubName,
+          p_nickname: payload.nickname,
+          p_avatar_url: payload.avatarUrl,
+          p_timezone: payload.timezone,
+        })
+      : await supabase.rpc('join_club', {
+          p_code: payload.code,
+          p_nickname: payload.nickname,
+          p_avatar_url: payload.avatarUrl,
+          p_timezone: payload.timezone,
+        })
+
+  if (error) {
+    // The same magic link can be opened in two tabs (or trigger two
+    // overlapping auth events), so two callers can both race to consume this
+    // stash. Whichever loses the race hits our own "you already belong to a
+    // club" guard -- that's not a real failure, the other caller already
+    // finished the job, so treat it as a no-op instead of surfacing an error.
+    if (!error.message.includes('already belong to a club')) throw error
   }
 }

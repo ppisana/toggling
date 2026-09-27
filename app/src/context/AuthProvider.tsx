@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import type { Club, Profile } from '../lib/types'
@@ -59,8 +59,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const profileRow = await loadProfileAndClub(activeSession.user.id)
       if (!profileRow) {
-        // Freshly verified a magic link (or first anonymous session) with no
-        // profile yet -- finish the club they were creating/joining, if any.
+        // Freshly verified a magic link with no profile yet -- finish the
+        // club they were creating/joining, if there's one stashed. The magic
+        // link can be opened in a second tab while the original tab is still
+        // alive, and Supabase broadcasts the new session to both, so this can
+        // race with another tab doing the same thing -- consumePendingSignup
+        // treats "you already belong to a club" as a benign no-op rather than
+        // an error for exactly that reason.
         await consumePendingSignup()
         await loadProfileAndClub(activeSession.user.id)
       }
@@ -68,26 +73,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [loadProfileAndClub],
   )
 
+  // Supabase fires an 'INITIAL_SESSION' event on the onAuthStateChange
+  // listener in addition to resolving our own getSession() call, so without
+  // serializing them two concurrent runs could both see "no profile yet" and
+  // both try to finish the same pending club signup. Chain each run onto the
+  // previous one instead of letting them race.
+  const queueRef = useRef(Promise.resolve())
+
   useEffect(() => {
     let active = true
 
-    async function bootstrap() {
-      setLoading(true)
-      setError(null)
-      try {
-        const { data } = await supabase.auth.getSession()
-        if (active) await handleSession(data.session)
-      } catch (err) {
-        if (active) setError(errorMessage(err, "We couldn't sign you in"))
-      } finally {
-        if (active) setLoading(false)
-      }
+    function runHandleSession(newSession: Session | null) {
+      queueRef.current = queueRef.current.then(async () => {
+        setLoading(true)
+        setError(null)
+        try {
+          if (active) await handleSession(newSession)
+        } catch (err) {
+          if (active) setError(errorMessage(err, "We couldn't sign you in"))
+        } finally {
+          if (active) setLoading(false)
+        }
+      })
     }
 
-    bootstrap()
+    supabase.auth.getSession().then(({ data }) => runHandleSession(data.session))
 
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      handleSession(newSession).catch((err) => setError(errorMessage(err, "We couldn't sign you in")))
+      runHandleSession(newSession)
     })
 
     return () => {

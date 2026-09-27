@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/AuthProvider'
 import { AvatarPicker } from '../components/AvatarPicker'
 import { TimezoneSelect } from '../components/TimezoneSelect'
 import { detectTimezone } from '../lib/timezones'
@@ -11,6 +12,12 @@ import { stashPendingSignup, clearPendingSignup } from '../lib/pendingSignup'
 type Mode = 'choose' | 'create' | 'join' | 'confirm'
 
 export function Landing() {
+  const { session, refresh } = useAuth()
+  // Already signed in (e.g. came back from the magic link, or the "secure
+  // your account" flow left a session with no club yet) -- no need to collect
+  // an email or send another link, just finish the club directly.
+  const alreadySignedIn = !!session
+
   const [searchParams] = useSearchParams()
   const codeFromLink = searchParams.get('code')?.toUpperCase() ?? ''
   const [mode, setMode] = useState<Mode>(codeFromLink ? 'join' : 'choose')
@@ -25,11 +32,30 @@ export function Landing() {
 
   const isCreate = mode === 'create'
 
-  async function sendMagicLink(e: React.FormEvent) {
+  async function submitForm(e: React.FormEvent) {
     e.preventDefault()
     setBusy(true)
     setError(null)
     try {
+      if (alreadySignedIn) {
+        const { error: rpcError } = isCreate
+          ? await supabase.rpc('create_club', {
+              p_name: clubName.trim(),
+              p_nickname: nickname.trim(),
+              p_avatar_url: avatar,
+              p_timezone: timezone,
+            })
+          : await supabase.rpc('join_club', {
+              p_code: code.trim().toUpperCase(),
+              p_nickname: nickname.trim(),
+              p_avatar_url: avatar,
+              p_timezone: timezone,
+            })
+        if (rpcError) throw rpcError
+        await refresh()
+        return
+      }
+
       stashPendingSignup(
         isCreate
           ? { kind: 'create', clubName: clubName.trim(), nickname: nickname.trim(), avatarUrl: avatar, timezone }
@@ -115,7 +141,7 @@ export function Landing() {
         <h1 className="font-display text-xl font-bold text-amber-50">
           {isCreate ? 'Start your Country Club' : 'Join a Country Club'}
         </h1>
-        <form onSubmit={sendMagicLink} className="mt-6 flex flex-col gap-4">
+        <form onSubmit={submitForm} className="mt-6 flex flex-col gap-4">
           {isCreate ? (
             <label className="flex flex-col gap-1 text-sm font-medium text-amber-100/80">
               Club name
@@ -164,17 +190,19 @@ export function Landing() {
             <TimezoneSelect value={timezone} onChange={setTimezone} />
           </label>
 
-          <label className="flex flex-col gap-1 text-sm font-medium text-amber-100/80">
-            Your email (private — only used to sign you back in)
-            <input
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="rounded-lg border border-emerald-700/60 bg-emerald-950/70 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
-            />
-          </label>
+          {!alreadySignedIn && (
+            <label className="flex flex-col gap-1 text-sm font-medium text-amber-100/80">
+              Your email (private — only used to sign you back in)
+              <input
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="rounded-lg border border-emerald-700/60 bg-emerald-950/70 px-3 py-2 text-amber-50 placeholder:text-amber-100/30 focus:border-amber-400 focus:outline-none"
+              />
+            </label>
+          )}
 
           {error && <p className="text-sm text-red-400">{error}</p>}
 
@@ -183,7 +211,7 @@ export function Landing() {
             disabled={busy}
             className="mt-2 rounded-xl bg-gradient-to-b from-lime-400 to-green-600 px-4 py-3 font-semibold text-emerald-950 shadow-lg shadow-black/30 hover:from-lime-300 hover:to-green-500 disabled:opacity-50"
           >
-            {busy ? 'One moment…' : 'Send me a sign-in link'}
+            {busy ? 'One moment…' : alreadySignedIn ? (isCreate ? 'Create club' : 'Join') : 'Send me a sign-in link'}
           </button>
         </form>
       </div>
